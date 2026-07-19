@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" fill="none" role="img" aria-label="球場線">
+  <!-- Half-pitch markings; colour inherits via currentColor -->
+  <g stroke="currentColor" stroke-width="2" fill="none">
+    <!-- outer boundary -->
+    <rect x="1" y="1" width="1198" height="798"/>
+    <!-- halfway line -->
+    <line x1="600" y1="0" x2="600" y2="800"/>
+    <!-- centre circle + spot -->
+    <circle cx="600" cy="400" r="107.6"/>
+    <circle cx="600" cy="400" r="3" fill="currentColor" stroke="none"/>
+    <!-- penalty box -->
+    <rect x="0" y="163" width="194" height="474"/>
+    <!-- six-yard box -->
+    <rect x="0" y="292.5" width="64.7" height="215"/>
+    <!-- penalty spot -->
+    <circle cx="129.4" cy="400" r="3" fill="currentColor" stroke="none"/>
+    <!-- penalty arc -->
+    <path d="M 194 331.6 A 107.6 107.6 0 0 1 194 468.4"/>
+    <!-- corner arcs -->
+    <path d="M 0 12 A 12 12 0 0 0 12 0"/>
+    <path d="M 12 800 A 12 12 0 0 0 0 788"/>
+    <!-- goal -->
+    <rect x="-16" y="356" width="16" height="88"/>
+  </g>
+</svg>
