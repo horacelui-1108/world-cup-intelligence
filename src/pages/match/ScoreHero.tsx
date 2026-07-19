@@ -63,9 +63,12 @@ function StatusChip({ match }: { match: Match }) {
 function ScorerColumn({
   scorers,
   align,
+  aet = false,
 }: {
   scorers: GoalEvent[];
   align: 'left' | 'right';
+  /** 加時賽事：分鐘直寫（93' 唔係 90+3'） */
+  aet?: boolean;
 }) {
   if (scorers.length === 0) return null;
   const sorted = [...scorers].sort((a, b) => (b.minute ?? -1) - (a.minute ?? -1));
@@ -91,7 +94,7 @@ function ScorerColumn({
     } else {
       lines.push({
         key: `${s.playerId ?? name}-${s.minute}-${lines.length}`,
-        label: `${formatMinute(s.minute)} ${name}${suffix}`,
+        label: `${formatMinute(s.minute, aet)} ${name}${suffix}`,
         playerId: s.playerId,
       });
     }
@@ -200,7 +203,7 @@ export default function ScoreHero({ match, meta, analysisHref }: ScoreHeroProps)
               {home.name}
             </Link>
             <p className="font-num text-caption tracking-wider text-text-3">{home.shortName}</p>
-            <ScorerColumn scorers={homeScorers} align="right" />
+            <ScorerColumn scorers={homeScorers} align="right" aet={match.score.extraTime !== undefined} />
           </div>
 
           {/* 比分 / VS */}
@@ -281,7 +284,7 @@ export default function ScoreHero({ match, meta, analysisHref }: ScoreHeroProps)
               {away.name}
             </Link>
             <p className="font-num text-caption tracking-wider text-text-3">{away.shortName}</p>
-            <ScorerColumn scorers={awayScorers} align="left" />
+            <ScorerColumn scorers={awayScorers} align="left" aet={match.score.extraTime !== undefined} />
           </div>
         </div>
 

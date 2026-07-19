@@ -2,12 +2,15 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import type { GroupLetter, Match } from '@/types/football';
+import type { GroupLetter, Match, Stage } from '@/types/football';
 import { cn } from '@/lib/utils';
 import ScheduleRow from './ScheduleRow';
-import { ALL_TEAMS, GROUP_LETTERS, crestPath } from './model';
+import { ALL_TEAMS, GROUP_LETTERS, STAGE_LABELS, crestPath } from './model';
 
 const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
+
+/** 淘汰賽階段順序（分組視圖底部「淘汰賽」區域用） */
+const KNOCKOUT_ORDER: Stage[] = ['R32', 'R16', 'QF', 'SF', '3P', 'F'];
 
 interface GroupBucket {
   letter: GroupLetter;
@@ -15,9 +18,16 @@ interface GroupBucket {
   matches: Match[];
 }
 
+interface KnockoutBucket {
+  stage: Stage;
+  matches: Match[];
+}
+
 /**
  * schedule.md §3 — 分組視圖：A–L 十二組 accordion（單開），
  * 組頭有 serif 字母 badge + 4 隊 crest + 場數；展開見賽事 + 排名連結。
+ * 底部加「淘汰賽」區域（32強→決賽分階段，同一 ScheduleRow），
+ * 等篩選結果入面嘅淘汰賽場次唔會憑空消失（顯示數 = 實際 render 數）。
  */
 export default function GroupView({ matches }: { matches: Match[] }) {
   const reduce = useReducedMotion();
@@ -35,11 +45,24 @@ export default function GroupView({ matches }: { matches: Match[] }) {
     [matches],
   );
 
+  // 淘汰賽場次（stage !== 'GROUP'）——揀咗組別 chip 時 base filter 已剔走，
+  // 呢度自然得 0 場 → 區域自動隱藏，計數同 render 一致
+  const knockoutStages = useMemo<KnockoutBucket[]>(
+    () =>
+      KNOCKOUT_ORDER.map((stage) => ({
+        stage,
+        matches: matches
+          .filter((m) => m.stage === stage)
+          .sort((a, b) => a.kickoffUtc.localeCompare(b.kickoffUtc) || a.matchId.localeCompare(b.matchId)),
+      })).filter((s) => s.matches.length > 0),
+    [matches],
+  );
+
   // 派生當前展開組：URL/篩選改變後若所選組已無賽事 → 展開第一組
   const openLetter: GroupLetter | null =
     open && groups.some((g) => g.letter === open) ? open : (groups[0]?.letter ?? null);
 
-  if (groups.length === 0) return null;
+  if (groups.length === 0 && knockoutStages.length === 0) return null;
 
   return (
     <div className="space-y-3">
@@ -133,6 +156,42 @@ export default function GroupView({ matches }: { matches: Match[] }) {
           </motion.div>
         );
       })}
+
+      {/* 淘汰賽區域：按階段分組，同一 ScheduleRow；無淘汰賽場次（如揀咗組別 chip）時隱藏 */}
+      {knockoutStages.length > 0 && (
+        <section aria-label="淘汰賽" className="space-y-3 pt-3">
+          <h2 className="text-label text-text-2">淘汰賽</h2>
+          {knockoutStages.map((s, si) => (
+            <motion.div
+              key={s.stage}
+              layout={reduce ? false : 'position'}
+              initial={reduce ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.25,
+                ease: EASE,
+                delay: reduce ? 0 : Math.min(groups.length + si, 12) * 0.04,
+                layout: { duration: 0.25, ease: EASE },
+              }}
+              className="overflow-hidden rounded-md border border-border bg-surface"
+            >
+              <div className="flex items-center gap-3 px-4 py-3">
+                <span className="rounded-full border border-gold/50 px-2 py-0.5 text-caption font-medium text-gold">
+                  {STAGE_LABELS[s.stage]}
+                </span>
+                <span className="text-caption text-text-3">{s.matches.length} 場賽事</span>
+              </div>
+              <ul className="divide-y divide-border border-t border-border">
+                {s.matches.map((m) => (
+                  <li key={m.matchId}>
+                    <ScheduleRow match={m} />
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </section>
+      )}
     </div>
   );
 }

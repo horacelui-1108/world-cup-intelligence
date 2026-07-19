@@ -13,7 +13,8 @@
     --border-strong: #C4C1B4;
     --text: #191C17;
     --text-2: #5C655A;
-    --text-3: #8B9187;
+    /* WCAG AA：on --bg #F6F5F0 = 4.79:1（舊值 #8B9187 只有 3.0:1） */
+    --text-3: #696E64;
     --accent: #2C7A58;
     --accent-strong: #35926A;
     --gold: #A8842F;
@@ -75,7 +76,8 @@
     --border-strong: #37402F;
     --text: #F0EEE6;
     --text-2: #A8AFA4;
-    --text-3: #6E7A6B;
+    /* WCAG AA：on --bg #0B0E0C = 5.35:1（舊值 #6E7A6B 只有 4.3:1） */
+    --text-3: #7F8A75;
     --accent: #3FA97B;
     --accent-strong: #55C795;
     --gold: #C8A45D;

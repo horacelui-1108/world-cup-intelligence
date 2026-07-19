@@ -74,10 +74,12 @@ export function statusText(match: Pick<Match, 'status'>): string {
 /**
  * 分鐘顯示：90+2' 以整數 92 儲存、120+5' 以 125 儲存（見 data/matches.ts 註解）。
  * null = 分鐘未核實 → 顯示「--'」，絕不虛構。
+ * aet=true（加時賽事）：91–120 係加時實際分鐘，直寫（93'）；超過 120 先係 120+x。
  */
-export function formatMinute(minute: number | null | undefined): string {
+export function formatMinute(minute: number | null | undefined, aet = false): string {
   if (minute == null) return "--'";
   if (minute > 120) return `120+${minute - 120}'`;
+  if (aet) return `${minute}'`;
   if (minute > 90) return `90+${minute - 90}'`;
   return `${minute}'`;
 }

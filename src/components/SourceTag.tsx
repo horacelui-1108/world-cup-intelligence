@@ -46,7 +46,7 @@ export default function SourceTag({ index, source, className }: SourceTagProps) 
           <a
             href={source.url}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="mt-1 block break-all text-accent underline-offset-2 hover:underline"
           >
             {source.url}

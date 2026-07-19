@@ -54,51 +54,52 @@ export default function LatestAnalysis({ slice }: { slice: AsyncSlice<AnalysisCa
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="md:col-span-2"
           >
-            <Link
-              to={`/analysis/${featured.slug}`}
-              className="group block overflow-hidden rounded-md border border-border bg-surface transition-colors duration-200 hover:border-border-strong"
-            >
-              <div className="relative aspect-video overflow-hidden">
-                <img
-                  src="/analysis-texture.jpg"
-                  alt=""
-                  aria-hidden
-                  className="h-full w-full object-cover opacity-70 transition-transform [transition-duration:400ms] group-hover:scale-[1.03]"
-                />
-                <span className="absolute bottom-2 left-2 rounded-full border border-gold/50 bg-bg/70 px-2 py-0.5 text-caption text-gold">
-                  {featured.matchCaption}
-                </span>
-              </div>
-              <div className="p-5">
-                <h3 className="font-display text-xl font-semibold text-foreground md:text-2xl">
-                  <span className="bg-[linear-gradient(var(--accent),var(--accent))] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] [transition-duration:250ms] group-hover:bg-[length:100%_2px]">
-                    {featured.title}
-                  </span>
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-text-2">{featured.excerpt}</p>
-                <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-caption text-text-3">
-                  <span>{featured.byline}</span>
-                  <span aria-hidden>·</span>
-                  <span>{kickoffLabel(featured.publishedAt, timeZone)}</span>
-                  <span aria-hidden>·</span>
-                  <span className="inline-flex items-center gap-1">
-                    <Clock className="h-3 w-3" strokeWidth={1.5} aria-hidden />
-                    {featured.readingMinutes} 分鐘
-                  </span>
-                  <span aria-hidden>·</span>
-                  <span className="inline-flex items-center gap-0.5">
-                    {featured.sources.map((s, i) => (
-                      <SourceTag key={s.name} index={i + 1} source={s} />
-                    ))}
-                    <span className="text-text-3">
-                      {featured.sourceCount > featured.sources.length
-                        ? `等 ${featured.sourceCount} 個來源`
-                        : `${featured.sourceCount} 個來源`}
-                    </span>
+            <div className="overflow-hidden rounded-md border border-border bg-surface transition-colors duration-200 hover:border-border-strong">
+              {/* BUG-1：Link 只包標題/摘要區；sources 行（SourceTag popover）移出 Link，
+                  否則點〔Sn〕會被卡片導航騎劫 */}
+              <Link to={`/analysis/${featured.slug}`} className="group block">
+                <div className="relative aspect-video overflow-hidden">
+                  <img
+                    src="/analysis-texture.jpg"
+                    alt=""
+                    aria-hidden
+                    className="h-full w-full object-cover opacity-70 transition-transform [transition-duration:400ms] group-hover:scale-[1.03]"
+                  />
+                  <span className="absolute bottom-2 left-2 rounded-full border border-gold/50 bg-bg/70 px-2 py-0.5 text-caption text-gold">
+                    {featured.matchCaption}
                   </span>
                 </div>
+                <div className="px-5 pt-5">
+                  <h3 className="font-display text-xl font-semibold text-foreground md:text-2xl">
+                    <span className="bg-[linear-gradient(var(--accent),var(--accent))] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] [transition-duration:250ms] group-hover:bg-[length:100%_2px]">
+                      {featured.title}
+                    </span>
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-text-2">{featured.excerpt}</p>
+                </div>
+              </Link>
+              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 px-5 pb-5 text-caption text-text-3">
+                <span>{featured.byline}</span>
+                <span aria-hidden>·</span>
+                <span>{kickoffLabel(featured.publishedAt, timeZone)}</span>
+                <span aria-hidden>·</span>
+                <span className="inline-flex items-center gap-1">
+                  <Clock className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                  {featured.readingMinutes} 分鐘
+                </span>
+                <span aria-hidden>·</span>
+                <span className="inline-flex items-center gap-0.5">
+                  {featured.sources.map((s, i) => (
+                    <SourceTag key={s.name} index={i + 1} source={s} />
+                  ))}
+                  <span className="text-text-3">
+                    {featured.sourceCount > featured.sources.length
+                      ? `等 ${featured.sourceCount} 個來源`
+                      : `${featured.sourceCount} 個來源`}
+                  </span>
+                </span>
               </div>
-            </Link>
+            </div>
           </motion.div>
 
           {/* compact rows */}

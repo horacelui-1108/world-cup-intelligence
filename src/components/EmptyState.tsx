@@ -10,6 +10,8 @@ interface EmptyStateProps {
   onCta?: () => void;
   className?: string;
   compact?: boolean;
+  /** 標題元素（預設 h3；整頁式用法如 404 應傳 h1 保持標題層級語意） */
+  titleAs?: 'h1' | 'h2' | 'h3';
 }
 
 /**
@@ -24,6 +26,7 @@ export default function EmptyState({
   onCta,
   className,
   compact = false,
+  titleAs: TitleTag = 'h3',
 }: EmptyStateProps) {
   const cta = ctaLabel ? (
     ctaHref ? (
@@ -65,9 +68,9 @@ export default function EmptyState({
           maskPosition: 'center',
         }}
       />
-      <h3 className={cn('relative font-display font-semibold text-foreground', compact ? 'text-lg' : 'text-xl md:text-2xl')}>
+      <TitleTag className={cn('relative font-display font-semibold text-foreground', compact ? 'text-lg' : 'text-xl md:text-2xl')}>
         {title}
-      </h3>
+      </TitleTag>
       {description && <p className="relative mt-2 max-w-md text-sm text-text-2">{description}</p>}
       {cta && <div className="relative mt-5">{cta}</div>}
     </div>

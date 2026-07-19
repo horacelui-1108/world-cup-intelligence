@@ -28,6 +28,8 @@ export default function VarTab({ match }: { match: Match }) {
   }
 
   const varEvents = (match.events ?? []).filter((e) => e.type === 'var');
+  // 加時賽事分鐘直寫（93' 唔係 90+3'）
+  const aet = match.score.extraTime !== undefined;
 
   if (varEvents.length === 0) {
     return (
@@ -55,7 +57,7 @@ export default function VarTab({ match }: { match: Match }) {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-num text-sm font-semibold text-text-2 tnum">
-                  {formatMinute(e.minute)}
+                  {formatMinute(e.minute, aet)}
                 </span>
                 <span className="inline-flex items-center rounded-full border border-warn/50 bg-warn/10 px-2 py-0.5 text-caption font-medium text-warn">
                   {e.varOutcome ? VAR_OUTCOME_LABELS[e.varOutcome] : 'VAR 覆核'}

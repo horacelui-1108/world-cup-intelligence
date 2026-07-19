@@ -166,6 +166,8 @@ export default function EventTimeline({ match }: { match: Match }) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [filter, setFilter] = useState<EventFilter>('all');
   const status = uiStatus(match.status);
+  // 加時賽事分鐘直寫（93' 唔係 90+3'）
+  const aet = match.score.extraTime !== undefined;
 
   const entries = useMemo(() => buildTimeline(match), [match]);
   const scores = useMemo(() => scoreAfterByKey(match, entries), [match, entries]);
@@ -245,7 +247,7 @@ export default function EventTimeline({ match }: { match: Match }) {
                         className="relative z-10 mt-1 flex h-7 min-w-12 items-center justify-center rounded-full border border-border bg-surface px-1.5 font-num text-xs font-semibold text-text-2 tnum transition-colors duration-200 group-hover:text-accent"
                         aria-label={`第 ${entry.minute ?? '未知'} 分鐘`}
                       >
-                        {formatMinute(entry.minute)}
+                        {formatMinute(entry.minute, aet)}
                       </time>
                     </div>
                     <div

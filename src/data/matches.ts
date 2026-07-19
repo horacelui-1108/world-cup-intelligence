@@ -310,7 +310,12 @@ const knockoutMatches: Match[] = [
     homeTeamId: 'aus', awayTeamId: 'egy', home: 1, away: 1,
     penalties: { home: 2, away: 4 },
   }),
-  ko({ n: 87, stage: 'R32', kickoffUtc: '2026-07-03T20:00:00Z', venueId: 'hardrock', homeTeamId: 'arg', awayTeamId: 'cpv', home: 3, away: 2 }),
+  // brief：阿根廷 3-2 佛得角 AET（90 分鐘 2-2，加時 1-0）
+  ko({
+    n: 87, stage: 'R32', kickoffUtc: '2026-07-03T20:00:00Z', venueId: 'hardrock',
+    homeTeamId: 'arg', awayTeamId: 'cpv', home: 3, away: 2,
+    extraTime: { home: 1, away: 0 },
+  }),
   ko({ n: 88, stage: 'R32', kickoffUtc: '2026-07-03T23:00:00Z', venueId: 'arrowhead', homeTeamId: 'col', awayTeamId: 'gha', home: 1, away: 0 }),
   // --- 16 強 ---
   ko({ n: 89, stage: 'R16', kickoffUtc: '2026-07-04T17:00:00Z', venueId: 'nrg', homeTeamId: 'can', awayTeamId: 'mar', home: 0, away: 3 }),
@@ -383,7 +388,8 @@ const lateKnockoutMatches: Match[] = [
     extraTime: { home: 0, away: 1 },
     events: [
       goal(36, 'nor', 'schjelderup', 'Andreas Schjelderup'),
-      goal(45, 'eng', 'bellingham', 'Jude Bellingham'),
+      // brief 只提供「~45'」約數 → minute = null（唔虛構精確分鐘）
+      goal(null, 'eng', 'bellingham', 'Jude Bellingham'),
       { minute: 56, type: 'var', teamId: 'nor', playerId: 'heggem', playerName: 'Heggem', detail: 'Heggem 入球因 Haaland 犯規，經 VAR 覆核後取消', varOutcome: 'goal_disallowed' },
       goal(93, 'eng', 'bellingham', 'Jude Bellingham'),
     ],
@@ -391,11 +397,12 @@ const lateKnockoutMatches: Match[] = [
   ko({
     n: 100, stage: 'QF', kickoffUtc: '2026-07-11T20:00:00Z', venueId: 'arrowhead',
     homeTeamId: 'arg', awayTeamId: 'sui', home: 3, away: 1,
-    // brief：Mac Allister（Messi 角球助攻）、Álvarez 建功；Ndoye 為瑞士破門；
-    // Embolo 紅牌（瑞士十人）；入球分鐘未核實
+    // brief：阿根廷 3-1 瑞士 AET（90 分鐘 2-1，加時 1-0）；
+    // Mac Allister（Messi 角球助攻）、Álvarez 建功；Ndoye 為瑞士破門；
+    // Embolo 紅牌（瑞士十人）——brief 無提及 VAR，唔虛構 VAR 覆核；入球分鐘未核實
+    extraTime: { home: 1, away: 0 },
     events: [
       { minute: null, type: 'red', teamId: 'sui', playerId: 'embolo', playerName: 'Breel Embolo', detail: '瑞士其後十人應戰' },
-      { minute: null, type: 'var', teamId: 'sui', playerId: 'embolo', playerName: 'Breel Embolo', detail: 'Embolo 紅牌經 VAR 覆核', varOutcome: 'red_confirmed' },
     ],
     scorers: [
       { minute: null, teamId: 'arg', playerId: 'mac-allister', playerName: 'Alexis Mac Allister', assistPlayerId: 'messi', assistName: 'Lionel Messi', kind: 'goal' },

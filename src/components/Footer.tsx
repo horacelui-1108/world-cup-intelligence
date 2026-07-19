@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useLang } from '@/lib/lang';
 import type { ChromeKey } from '@/lib/lang';
+import { getDataMode } from '@/lib/provider';
 import DataStatusBadge from '@/components/DataStatusBadge';
 import type { DataStatus } from '@/lib/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -41,6 +42,8 @@ export default function Footer({
 }: FooterProps) {
   const { t } = useLang();
   const updatedHkt = formatInTimeZone(new Date(lastUpdated), 'Asia/Hong_Kong', 'yyyy-MM-dd HH:mm');
+  // DEMO badge 只喺 demo provider 下顯示（G-12）；live 模式唔應誤標「示範數據」
+  const isDemo = getDataMode() === 'demo';
 
   return (
     <footer className="border-t border-border bg-surface pb-[calc(64px+env(safe-area-inset-bottom)+2rem)] text-text-3 md:pb-0">
@@ -78,7 +81,7 @@ export default function Footer({
               資料來源: {sourceName} · 最後更新 {updatedHkt} HKT
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <DataStatusBadge status="DEMO" />
+              {isDemo && <DataStatusBadge status="DEMO" />}
               <DataStatusBadge status="VERIFIED" />
               <DataStatusBadge status="PENDING" />
             </div>

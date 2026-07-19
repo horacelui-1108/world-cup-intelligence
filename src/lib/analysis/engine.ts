@@ -145,6 +145,10 @@ export function generateAnalysis(match: Match, ctx: AnalysisContext): MatchAnaly
   }
 
   let summaryText = `【${label}】${homeZh} ${scoreStr} ${awayZh}〔S1〕。`;
+  // 賽果性質（framework (a)）：加時決勝必須喺摘要反映（T3 只得摘要，冇完整報告）
+  if (match.score.extraTime) {
+    summaryText += `比賽需要加時，加時入球 ${match.score.extraTime.home}–${match.score.extraTime.away}〔S1〕。`;
+  }
   if (scorerBits.length > 0) summaryText += `${scorerBits.join('；')}〔S1〕。`;
   if (match.score.penalties) {
     summaryText += `雙方踢成 ${scoreStr}，${teamZh(winnerId as string)}互射十二碼贏 ${match.score.penalties.home}–${match.score.penalties.away}〔S1〕。`;

@@ -58,7 +58,7 @@ export default function ScheduleRow({ match, liveMinute }: ScheduleRowProps) {
         {status === 'live' && (
           <span className="inline-flex items-center gap-1 font-num text-sm font-semibold text-live tnum">
             <span className="h-1.5 w-1.5 rounded-full bg-live animate-live-pulse" />
-            {liveMinute != null ? formatMinute(liveMinute) : 'LIVE'}
+            {liveMinute != null ? formatMinute(liveMinute, knockout) : 'LIVE'}
           </span>
         )}
         {status === 'finished' && (
