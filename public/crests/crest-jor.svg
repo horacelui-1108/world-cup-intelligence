@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="JOR crest">
+<defs><clipPath id="c"><circle cx="48" cy="48" r="46"/></clipPath></defs>
+<g clip-path="url(#c)">
+<rect x="0" y="0" width="96" height="32.5" fill="#000000"/><rect x="0" y="32" width="96" height="32.5" fill="#FFFFFF"/><rect x="0" y="64" width="96" height="32.5" fill="#007A3D"/><polygon points="0 0 44 48 0 96" fill="#CE1126" /><path d="M15.0 42.0L16.0 45.8L19.7 44.3L17.3 47.5L20.8 49.3L16.9 49.5L17.6 53.4L15.0 50.4L12.4 53.4L13.1 49.5L9.2 49.3L12.7 47.5L10.3 44.3L14.0 45.8Z" fill="#FFFFFF" />
+<rect x="0" y="0" width="96" height="96" fill="none"/>
+</g>
+<circle cx="48" cy="48" r="46" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2"/>
+<text x="48" y="50" text-anchor="middle" dominant-baseline="central" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="800" font-size="19" letter-spacing="1.5" fill="#FFFFFF" stroke="rgba(0,0,0,0.45)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">JOR</text>
+</svg>

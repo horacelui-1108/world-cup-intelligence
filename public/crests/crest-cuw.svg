@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="CUW crest">
+<defs><clipPath id="c"><circle cx="48" cy="48" r="46"/></clipPath></defs>
+<g clip-path="url(#c)">
+<rect x="0" y="0" width="96" height="96" fill="#002B7F"/><rect x="0" y="58" width="96" height="12" fill="#F9E814"/><path d="M20.0 15.0L21.6 19.7L26.7 19.8L22.7 22.9L24.1 27.7L20.0 24.8L15.9 27.7L17.3 22.9L13.3 19.8L18.4 19.7Z" fill="#FFFFFF" /><path d="M36.0 11.0L37.2 14.4L40.8 14.5L37.9 16.6L38.9 20.0L36.0 18.0L33.1 20.0L34.1 16.6L31.2 14.5L34.8 14.4Z" fill="#FFFFFF" />
+<rect x="0" y="0" width="96" height="96" fill="none"/>
+</g>
+<circle cx="48" cy="48" r="46" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2"/>
+<text x="48" y="50" text-anchor="middle" dominant-baseline="central" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="800" font-size="19" letter-spacing="1.5" fill="#FFFFFF" stroke="rgba(0,0,0,0.45)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">CUW</text>
+</svg>
