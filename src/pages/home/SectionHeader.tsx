@@ -1,22 +1,30 @@
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 interface SectionHeaderProps {
   id: string;
   title: string;
   caption?: string;
+  /** 來源 caption / DataStatusBadge（渲染喺 caption 行右側） */
+  badge?: ReactNode;
   linkLabel?: string;
   linkTo?: string;
 }
 
-export default function SectionHeader({ id, title, caption, linkLabel, linkTo }: SectionHeaderProps) {
+export default function SectionHeader({ id, title, caption, badge, linkLabel, linkTo }: SectionHeaderProps) {
   return (
     <div className="mb-4 flex items-end justify-between gap-4 md:mb-6">
       <div>
         <h2 id={id} className="font-display text-xl font-semibold text-foreground md:text-2xl">
           {title}
         </h2>
-        {caption && <p className="mt-1 text-caption text-text-3">{caption}</p>}
+        {(caption || badge) && (
+          <p className="mt-1 flex flex-wrap items-center gap-2 text-caption text-text-3">
+            {caption}
+            {badge}
+          </p>
+        )}
       </div>
       {linkLabel && linkTo && (
         <Link

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -6,34 +6,95 @@ import { ChevronDown, MapPin, Users } from 'lucide-react';
 import CountdownTimer from '@/components/CountdownTimer';
 import DataStatusBadge from '@/components/DataStatusBadge';
 import TimezoneToggle from '@/components/TimezoneToggle';
+import EmptyState from '@/components/EmptyState';
+import ErrorState from '@/components/ErrorState';
+import { HeroSkeleton } from '@/components/Skeletons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTimezone } from '@/lib/timezone';
 import { kickoffLabel, relativePast } from '@/lib/format';
-import { FINAL_MATCH, FINAL_VENUE_CAPACITY, LAST_UPDATED } from './data';
 import type { TeamRef } from '@/lib/types';
+import type { AsyncSlice } from './useHomeData';
+import type { HomeMatchesData } from './adapters';
 
 gsap.registerPlugin(ScrollTrigger);
+
+interface HeroFinalProps {
+  slice: AsyncSlice<HomeMatchesData>;
+  /** 倒數歸零或 provider 顯示決賽已開賽 */
+  finalStarted: boolean;
+  onCountdownZero: () => void;
+}
 
 /**
  * Home Section 1 — Final Countdown hero.
  * GSAP + ScrollTrigger pinned storytelling (desktop 150vh); mobile gets a
  * single entrance stagger. GSAP is isolated to this component tree —
  * no Framer Motion is used here (react-dev.md library isolation rule).
+ * 數據來自 data provider 層（useHomeData matches slice）。
  */
-export default function HeroFinal({ onCountdownZero }: { onCountdownZero: () => void }) {
+export default function HeroFinal({ slice, finalStarted, onCountdownZero }: HeroFinalProps) {
+  const { data, loading, error, retry } = slice;
+
+  if (loading) {
+    return (
+      <section aria-label="決賽倒數載入中" aria-busy="true" className="border-b border-border">
+        <HeroSkeleton />
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section aria-label="決賽倒數" className="px-4 py-10 md:px-6">
+        <div className="mx-auto max-w-3xl">
+          <ErrorState title="決賽資料未能載入" error={error} onRetry={retry} compact />
+        </div>
+      </section>
+    );
+  }
+
+  if (!data?.final) {
+    return (
+      <section aria-label="決賽倒數" className="px-4 py-10 md:px-6">
+        <div className="mx-auto max-w-3xl">
+          <EmptyState
+            title="決賽資料暫未確定"
+            description="供應商暫時未有決賽编排,請先瀏覽完整賽程。"
+            ctaLabel="查看全部賽程"
+            ctaHref="/schedule"
+          />
+        </div>
+      </section>
+    );
+  }
+
+  return <HeroContent data={data} finalStarted={finalStarted} onCountdownZero={onCountdownZero} />;
+}
+
+function HeroContent({
+  data,
+  finalStarted,
+  onCountdownZero,
+}: {
+  data: HomeMatchesData;
+  finalStarted: boolean;
+  onCountdownZero: () => void;
+}) {
   const sectionRef = useRef<HTMLElement>(null);
   const dimRef = useRef<HTMLDivElement>(null);
   const crestLRef = useRef<HTMLAnchorElement>(null);
   const crestRRef = useRef<HTMLAnchorElement>(null);
   const countdownRef = useRef<HTMLDivElement>(null);
   const { timeZone, label } = useTimezone();
-  const [updatedLabel, setUpdatedLabel] = useState(() => relativePast(LAST_UPDATED));
+  const final = data.final as NonNullable<HomeMatchesData['final']>;
 
-  // Last-updated chip ticks every 30s
-  useLayoutEffect(() => {
-    const id = window.setInterval(() => setUpdatedLabel(relativePast(LAST_UPDATED)), 30_000);
+  // Last-updated chip：provider lastUpdated 相對時間,每 30s tick 一次
+  const [tick, setTick] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setTick(Date.now()), 30_000);
     return () => window.clearInterval(id);
   }, []);
+  const updatedLabel = relativePast(data.lastUpdated, new Date(tick));
 
   useLayoutEffect(() => {
     const mm = gsap.matchMedia();
@@ -113,7 +174,8 @@ export default function HeroFinal({ onCountdownZero }: { onCountdownZero: () => 
           </Link>
         </TooltipTrigger>
         <TooltipContent side="top" className="text-caption">
-          {team.name} · FIFA 排名第 {team.ranking}
+          {team.name}
+          {team.ranking != null ? ` · FIFA 排名第 ${team.ranking}` : ''}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -154,7 +216,7 @@ export default function HeroFinal({ onCountdownZero }: { onCountdownZero: () => 
       />
 
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-4 py-16 text-center md:px-6">
-        <p className="hero-intro text-label text-gold">2026 FIFA WORLD CUP · 決賽</p>
+        <p className="hero-intro text-label text-gold">2026 FIFA WORLD CUP · {final.stage}</p>
 
         <h1 id="hero-title" className="mt-4 font-display font-bold text-foreground">
           <span className="block overflow-hidden text-4xl leading-[1.15] md:text-6xl">
@@ -165,28 +227,28 @@ export default function HeroFinal({ onCountdownZero }: { onCountdownZero: () => 
             ))}
           </span>
           <span className="mt-2 block overflow-hidden text-2xl leading-[1.2] md:text-4xl">
-            {['西班牙', 'vs', '阿根廷'].map((w, i) => (
+            {[final.home.name, 'vs', final.away.name].map((w, i) => (
               <span key={i} className="hero-word inline-block will-change-transform">
                 {w}
-                {i < 2 && ' '}
+                {i < 2 && ' '}
               </span>
             ))}
           </span>
         </h1>
 
         <div className="mt-8 flex items-center gap-6 md:gap-10">
-          {crestLink(FINAL_MATCH.home, crestLRef)}
+          {crestLink(final.home, crestLRef)}
           <span className="hero-anim font-num text-lg font-semibold text-text-3">VS</span>
-          {crestLink(FINAL_MATCH.away, crestRRef)}
+          {crestLink(final.away, crestRRef)}
         </div>
 
         <div ref={countdownRef} className="mt-10">
-          <CountdownTimer targetIso={FINAL_MATCH.kickoffUtc} size="lg" onZero={onCountdownZero} />
+          <CountdownTimer targetIso={final.kickoffUtc} size="lg" onZero={onCountdownZero} />
         </div>
 
         <p className="hero-intro mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-text-2">
           <span key={label} className="animate-in fade-in duration-200">
-            開賽:{kickoffLabel(FINAL_MATCH.kickoffUtc, timeZone)} {label}
+            開賽:{kickoffLabel(final.kickoffUtc, timeZone)} {label}
           </span>
           <TimezoneToggle />
         </p>
@@ -194,21 +256,23 @@ export default function HeroFinal({ onCountdownZero }: { onCountdownZero: () => 
         <div className="hero-intro mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-caption text-text-3">
           <span className="inline-flex items-center gap-1.5">
             <MapPin className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
-            {FINAL_MATCH.venue}
+            {final.venue}
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
-            容量 {FINAL_VENUE_CAPACITY}
-          </span>
-          <DataStatusBadge status={FINAL_MATCH.meta.dataStatus} meta={FINAL_MATCH.meta} />
+          {data.finalVenueCapacity && (
+            <span className="inline-flex items-center gap-1.5">
+              <Users className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
+              容量 {data.finalVenueCapacity}
+            </span>
+          )}
+          <DataStatusBadge status={final.meta.dataStatus} meta={final.meta} />
         </div>
 
         <div className="hero-intro mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
-            to="/matches/final"
+            to={`/matches/${final.id}`}
             className="inline-flex min-h-11 items-center rounded-md bg-accent px-6 text-sm font-medium text-accent-foreground transition-colors duration-200 hover:bg-accent-strong"
           >
-            進入 Match Centre
+            {finalStarted ? '決賽 Match Centre' : '進入 Match Centre'}
           </Link>
           <Link
             to="/bracket"
@@ -219,9 +283,10 @@ export default function HeroFinal({ onCountdownZero }: { onCountdownZero: () => 
         </div>
       </div>
 
-      {/* bottom-left last-updated chip */}
+      {/* bottom-left last-updated chip（provider lastUpdated,30s tick） */}
       <p className="hero-intro absolute bottom-14 left-4 z-10 text-caption text-text-3 md:bottom-6 md:left-6">
-        最後更新:{updatedLabel} · Demo Data
+        最後更新:{updatedLabel} · {data.sourceName}
+        {data.dataMode === 'demo' ? ' · 示範數據' : ''}
       </p>
 
       {/* scroll cue */}

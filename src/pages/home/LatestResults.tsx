@@ -3,23 +3,27 @@ import { AnimatePresence, motion } from 'framer-motion';
 import MatchCard from '@/components/MatchCard';
 import FilterChip from '@/components/FilterChip';
 import EmptyState from '@/components/EmptyState';
+import ErrorState from '@/components/ErrorState';
+import DataStatusBadge from '@/components/DataStatusBadge';
+import { MatchRowSkeleton } from '@/components/Skeletons';
 import SectionHeader from './SectionHeader';
-import { LATEST_RESULTS } from './data';
+import type { AsyncSlice } from './useHomeData';
+import type { HomeMatchesData } from './adapters';
 
 type ResultFilter = 'all' | 'knockout' | 'group';
 
-const GROUP_STAGES = ['小組賽'];
-
-/** Home Section 4 — 最新賽果 */
-export default function LatestResults() {
+/** Home Section 4 — 最新賽果（最近 6 場 FT,kickoff 倒序） */
+export default function LatestResults({ slice }: { slice: AsyncSlice<HomeMatchesData> }) {
   const [filter, setFilter] = useState<ResultFilter>('all');
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const { data, loading, error, retry } = slice;
 
-  const filtered = LATEST_RESULTS.filter((m) => {
+  const results = data?.latestResults ?? [];
+  const filtered = results.filter((m) => {
     if (filter === 'all') return true;
-    if (filter === 'group') return GROUP_STAGES.includes(m.stage);
-    return !GROUP_STAGES.includes(m.stage);
-  }).slice(0, 6);
+    if (filter === 'group') return Boolean(m.group);
+    return !m.group;
+  });
 
   // keyboard-scroll the horizontal row with arrow keys
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -39,16 +43,25 @@ export default function LatestResults() {
       <SectionHeader
         id="results-heading"
         title="最新賽果"
+        badge={data ? <DataStatusBadge status={data.sourceMeta.dataStatus} meta={data.sourceMeta} /> : undefined}
         linkLabel="更多賽果"
         linkTo="/schedule?status=finished"
       />
       <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label="賽果篩選">
-        <FilterChip label="全部" selected={filter === 'all'} onClick={() => setFilter('all')} count={LATEST_RESULTS.length} />
+        <FilterChip label="全部" selected={filter === 'all'} onClick={() => setFilter('all')} count={results.length} />
         <FilterChip label="淘汰賽" selected={filter === 'knockout'} onClick={() => setFilter('knockout')} />
         <FilterChip label="小組賽" selected={filter === 'group'} onClick={() => setFilter('group')} />
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="grid gap-3 md:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <MatchRowSkeleton key={i} />
+          ))}
+        </div>
+      ) : error ? (
+        <ErrorState title="最新賽果未能載入" error={error} onRetry={retry} compact />
+      ) : filtered.length === 0 ? (
         <EmptyState
           compact
           title="該類別暫無賽果"

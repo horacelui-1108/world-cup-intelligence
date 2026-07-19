@@ -9,55 +9,40 @@ import TrendingTeams from './home/TrendingTeams';
 import LatestAnalysis from './home/LatestAnalysis';
 import KeyUpdates from './home/KeyUpdates';
 import { useHomeData } from './home/useHomeData';
-import {
-  ArticleCardSkeleton,
-  HeroSkeleton,
-  MatchCardSkeleton,
-  MatchRowSkeleton,
-  TeamTileSkeleton,
-} from '@/components/Skeletons';
 
-function HomeSkeletons() {
-  return (
-    <div aria-busy="true" aria-label="首頁資料載入中">
-      <HeroSkeleton />
-      <div className="mx-auto max-w-7xl space-y-10 px-4 pb-10 md:px-6">
-        <MatchCardSkeleton />
-        <div className="grid gap-3 md:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <MatchRowSkeleton key={i} />
-          ))}
-        </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <TeamTileSkeleton key={i} />
-          ))}
-        </div>
-        <ArticleCardSkeleton />
-      </div>
-    </div>
-  );
-}
-
+/**
+ * 首頁 — 所有 section 經 useHomeData() 接駁真實 data provider 層。
+ * 每個 section 獨立 loading skeleton → content / ErrorState（retry 真 refetch）；
+ * 一個 slice 失敗只會喺頂部顯示橫額 + 該 section 顯示 ErrorState,其餘照舊渲染。
+ */
 export default function Home() {
-  const { loading, error, retry } = useHomeData();
-  const [finalStarted, setFinalStarted] = useState(false);
+  const home = useHomeData();
+  const [countdownZero, setCountdownZero] = useState(false);
 
-  if (loading) return <HomeSkeletons />;
+  const erroredSlices = [home.matches, home.trending, home.analyses, home.news].filter((s) => s.error);
+  const retryErrored = () => erroredSlices.forEach((s) => s.retry());
+
+  const matchesData = home.matches.data;
+  const final = matchesData?.final ?? null;
+  // 決賽已開賽：倒數歸零,或 provider 顯示狀態已非 scheduled
+  const finalStarted = countdownZero || (final ? final.status !== 'scheduled' : false);
+  // 下一場 = 最早 scheduled 場次;若即係決賽本身(hero 已展示)則隱藏本 section
+  const nextScheduled = matchesData?.nextScheduled ?? null;
+  const next = nextScheduled && nextScheduled.id !== final?.id ? nextScheduled : null;
 
   return (
     <>
       <SmoothScroll />
 
       {/* inline error banner — rest of page still renders */}
-      {error && (
+      {erroredSlices.length > 0 && (
         <div role="alert" className="border-b border-live/40 bg-live/10">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-2.5 md:px-6">
             <AlertTriangle className="h-4 w-4 text-live" strokeWidth={1.5} aria-hidden />
             <p className="text-sm text-foreground">部分資料未能載入</p>
             <button
               type="button"
-              onClick={() => void retry()}
+              onClick={retryErrored}
               className="rounded-md border border-accent px-3 py-1 text-xs font-medium text-accent hover:bg-accent/10"
             >
               重試
@@ -66,13 +51,13 @@ export default function Home() {
         </div>
       )}
 
-      <HeroFinal onCountdownZero={() => setFinalStarted(true)} />
-      <TodayMatches />
-      <NextMatch next={null} finalStarted={finalStarted} />
-      <LatestResults />
-      <TrendingTeams />
-      <LatestAnalysis />
-      <KeyUpdates />
+      <HeroFinal slice={home.matches} finalStarted={finalStarted} onCountdownZero={() => setCountdownZero(true)} />
+      <TodayMatches slice={home.matches} />
+      <NextMatch slice={home.matches} next={next} finalStarted={finalStarted} />
+      <LatestResults slice={home.matches} />
+      <TrendingTeams slice={home.trending} />
+      <LatestAnalysis slice={home.analyses} />
+      <KeyUpdates slice={home.news} />
     </>
   );
 }
