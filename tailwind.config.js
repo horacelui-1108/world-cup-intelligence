@@ -5,7 +5,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        border: "hsl(var(--border))",
+        /* shadcn semantic tokens (HSL triplets) */
+        border: "hsl(var(--border-hsl))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -27,7 +28,7 @@ module.exports = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
+          DEFAULT: "hsl(var(--accent-hsl))",
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
@@ -48,6 +49,26 @@ module.exports = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        /* Design tokens (hex vars) */
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        "surface-2": "var(--surface-2)",
+        "border-strong": "var(--border-strong)",
+        text: "var(--text)",
+        "text-2": "var(--text-2)",
+        "text-3": "var(--text-3)",
+        "accent-strong": "var(--accent-strong)",
+        gold: "var(--gold)",
+        live: "var(--live)",
+        draw: "var(--draw)",
+        win: "var(--win)",
+        warn: "var(--warn)",
+        "info-bg": "var(--info-bg)",
+      },
+      fontFamily: {
+        display: ['"Noto Serif TC"', "serif"],
+        sans: ['"Noto Sans TC"', '"Inter"', "sans-serif"],
+        num: ['"Inter"', '"Noto Sans TC"', "sans-serif"],
       },
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",
