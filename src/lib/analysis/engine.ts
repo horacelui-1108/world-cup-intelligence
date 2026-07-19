@@ -669,6 +669,24 @@ function buildAllowedNumbers(match: Match): Set<number> {
     }
   }
   counts.forEach((v) => s.add(v));
+  // 中間比數（計算值）：依時間軸重放入球，記錄每個中間比分嘅數字
+  {
+    const timed = (match.events ?? [])
+      .filter((e) => (e.type === 'goal' || e.type === 'pen_goal' || e.type === 'own_goal') && e.minute !== null)
+      .sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0));
+    let rh = 0;
+    let ra = 0;
+    s.add(rh);
+    s.add(ra);
+    for (const e of timed) {
+      const scoringTeam =
+        e.type === 'own_goal' ? (e.teamId === match.homeTeamId ? match.awayTeamId : match.homeTeamId) : e.teamId;
+      if (scoringTeam === match.homeTeamId) rh += 1;
+      else ra += 1;
+      s.add(rh);
+      s.add(ra);
+    }
+  }
   // 衍生計算值：總入球、差距、互射十二碼總和
   s.add(sc.home + sc.away);
   s.add(Math.abs(sc.home - sc.away));
