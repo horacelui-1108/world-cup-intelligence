@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="PAR crest">
+<defs><clipPath id="c"><circle cx="48" cy="48" r="46"/></clipPath></defs>
+<g clip-path="url(#c)">
+<rect x="0" y="0" width="96" height="32.5" fill="#D52B1E"/><rect x="0" y="32" width="96" height="32.5" fill="#FFFFFF"/><rect x="0" y="64" width="96" height="32.5" fill="#0038A8"/>
+<rect x="0" y="0" width="96" height="96" fill="none"/>
+</g>
+<circle cx="48" cy="48" r="46" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2"/>
+<text x="48" y="50" text-anchor="middle" dominant-baseline="central" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="800" font-size="19" letter-spacing="1.5" fill="#1A1A1A" stroke="rgba(255,255,255,0.85)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">PAR</text>
+</svg>
