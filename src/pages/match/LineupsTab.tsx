@@ -61,6 +61,7 @@ function TeamLineup({ teamId, lineup }: { teamId: string; lineup?: Lineup }) {
             {lineup.formation}
           </span>
         )}
+        {lineup.coach && <span className="ml-auto text-caption text-text-3">教練:{lineup.coach}</span>}
       </div>
       <h4 className="mt-4 text-label text-text-3">正選</h4>
       <ul className="mt-1 divide-y divide-border/60">
@@ -84,7 +85,7 @@ function TeamLineup({ teamId, lineup }: { teamId: string; lineup?: Lineup }) {
 
 /**
  * match.md §4 — 陣容 tab。無 lineups 數據 → EmptyState「資料不足」;
- * 有就顯示正選/後備(教練欄位數據模型未涵蓋,唔會虛構)。
+ * 有就顯示正選/後備/陣式/教練（教練欄位為 optional，無核實來源就唔顯示）。
  */
 export default function LineupsTab({ match }: { match: Match }) {
   const status = uiStatus(match.status);

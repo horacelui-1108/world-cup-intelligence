@@ -29,7 +29,7 @@ export interface QuickSummary {
 }
 
 export interface TurningPoint {
-  eventType: 'goal' | 'red_card' | 'penalty';
+  eventType: 'goal' | 'red_card' | 'penalty' | 'var';
   minute: number;
   description: Claim;
   scoreBefore: string;

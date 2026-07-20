@@ -1,8 +1,10 @@
 /**
- * 104 場賽事數據 — 2026 FIFA 世界盃（小組賽 72 + 淘汰賽 31 已完成 + 決賽 scheduled）
+ * 104 場賽事數據 — 2026 FIFA 世界盃（全數完場：小組賽 72 + 淘汰賽 32，決賽 2026-07-19 已核實）
  *
  * 數據誠信聲明：
  * - 所有比分、日期、球場、入球者均來自 data-research-brief.md（ESPN 核實，dataStatus: VERIFIED）。
+ * - 決賽 M104（西班牙 1–0 阿根廷 AET）事件分鐘以 AS match sheet 為準，統計（含 xG）來自
+ *   ESPN match page stats box；角球數字來源不一致，留 null（唔顯示）。
  * - 【小組賽具體開球時間為近似值，結構預留精確值】：日期準確，UTC 時間按當日
  *   11:00 / 14:00 / 17:00 / 20:00 / 23:00 / 02:00（翌日）合理編排；淘汰賽開球時間同屬近似，
  *   惟 M103 季軍戰（17:00 ET = 21:00 UTC）與 M104 決賽（15:00 ET = 19:00 UTC）為 brief 核實時間。
@@ -26,7 +28,7 @@ const ESPN_URL =
 export const ESPN_VERIFIED: SourceMeta = {
   source: 'ESPN',
   sourceUrl: ESPN_URL,
-  retrievedAt: '2026-07-19T00:00:00Z',
+  retrievedAt: '2026-07-20T00:00:00Z',
   dataStatus: 'VERIFIED',
 };
 
@@ -190,14 +192,16 @@ interface KoSpec {
   awayTeamId: string;
   home: number;
   away: number;
+  halfTime?: { home: number; away: number };
   extraTime?: { home: number; away: number };
   penalties?: { home: number; away: number };
   events?: MatchEvent[];
   scorers?: GoalEvent[];
+  source?: SourceMeta;
 }
 
 function ko(spec: KoSpec): Match {
-  const { n, stage, kickoffUtc, venueId, homeTeamId, awayTeamId, home, away, extraTime, penalties, events, scorers } = spec;
+  const { n, stage, kickoffUtc, venueId, homeTeamId, awayTeamId, home, away, halfTime, extraTime, penalties, events, scorers, source } = spec;
   return {
     matchId: `M${n}`,
     stage,
@@ -206,10 +210,10 @@ function ko(spec: KoSpec): Match {
     homeTeamId,
     awayTeamId,
     status: 'ft',
-    score: { home, away, extraTime, penalties },
+    score: { home, away, halfTime, extraTime, penalties },
     events,
     scorers: scorers ?? (events ? toScorers(events) : undefined),
-    source: ESPN_VERIFIED,
+    source: source ?? ESPN_VERIFIED,
   };
 }
 
@@ -428,11 +432,56 @@ const lateKnockoutMatches: Match[] = [
       { minute: 92, type: 'goal', teamId: 'arg', playerId: 'l-martinez', playerName: 'Lautaro Martínez', assistPlayerId: 'messi', assistName: 'Lionel Messi' },
     ],
   }),
-  // --- 季軍戰（17:00 ET = 21:00 UTC，brief 核實時間；入球者明細未齊，留空） ---
-  ko({ n: 103, stage: '3P', kickoffUtc: '2026-07-18T21:00:00Z', venueId: 'hardrock', homeTeamId: 'fra', awayTeamId: 'eng', home: 4, away: 6 }),
+  // --- 季軍戰（17:00 ET = 21:00 UTC，brief 核實時間；入球者及分鐘已核實，半場英格蘭 4–0 領先） ---
+  ko({
+    n: 103, stage: '3P', kickoffUtc: '2026-07-18T21:00:00Z', venueId: 'hardrock',
+    homeTeamId: 'fra', awayTeamId: 'eng', home: 4, away: 6,
+    halfTime: { home: 0, away: 4 },
+    events: [
+      goal(3, 'eng', 'rice', 'Declan Rice'),
+      goal(18, 'eng', 'konsa', 'Ezri Konsa'),
+      goal(37, 'eng', 'saka', 'Bukayo Saka'),
+      goal(44, 'eng', 'saka', 'Bukayo Saka'),
+      goal(47, 'fra', 'mbappe', 'Kylian Mbappé'),
+      goal(54, 'fra', 'barcola', 'Bradley Barcola'),
+      goal(66, 'fra', 'mbappe', 'Kylian Mbappé'),
+      goal(86, 'eng', 'saka', 'Bukayo Saka', undefined, 'pen_goal'),
+      goal(95, 'fra', 'dembele', 'Ousmane Dembélé'),
+      goal(98, 'eng', 'bellingham', 'Jude Bellingham'),
+    ],
+    source: { ...ESPN_VERIFIED, retrievedAt: '2026-07-20T00:00:00Z' },
+  }),
 ];
 
-/** 決賽 — 2026-07-19 15:00 ET = 19:00 UTC（brief 核實時間），PENDING */
+/**
+ * 決賽 — 2026-07-19 15:00 ET = 19:00 UTC（brief 核實時間），已完場：
+ * 西班牙 1–0 阿根廷（加時；90 分鐘 0–0，無互射十二碼）。
+ * 事件分鐘以 AS match sheet 為準；統計（控球、射門、射正、犯規、越位、傳球成功率、xG）
+ * 來自 ESPN match page stats box；角球數字來源不一致 → null（唔顯示）。
+ * Scaloni 黃牌為約 104 分鐘（約數）→ minute = null，絕不虛構精確分鐘。
+ */
+const finalEvents: MatchEvent[] = [
+  { minute: 40, type: 'yellow', teamId: 'arg', playerId: 'lisandro-martinez', playerName: 'Lisandro Martínez' },
+  { minute: 43, type: 'sub', teamId: 'arg', playerId: 'otamendi', playerName: 'Nicolás Otamendi', assistPlayerId: 'lisandro-martinez', assistName: 'Lisandro Martínez', detail: '傷出' },
+  { minute: 45, type: 'sub', teamId: 'arg', playerId: 'paredes', playerName: 'Leandro Paredes', assistPlayerId: 'nico-gonzalez', assistName: 'Nico González' },
+  { minute: 51, type: 'yellow', teamId: 'arg', playerId: 'paredes', playerName: 'Leandro Paredes' },
+  { minute: 61, type: 'sub', teamId: 'esp', playerId: 'torres', playerName: 'Ferran Torres', assistPlayerId: 'oyarzabal', assistName: 'Mikel Oyarzabal' },
+  { minute: 61, type: 'sub', teamId: 'esp', playerId: 'pedri', playerName: 'Pedri', assistPlayerId: 'fabian-ruiz', assistName: 'Fabián Ruiz' },
+  { minute: 74, type: 'sub', teamId: 'esp', playerId: 'nico-williams', playerName: 'Nico Williams', assistPlayerId: 'alex-baena', assistName: 'Álex Baena' },
+  { minute: 74, type: 'sub', teamId: 'esp', playerId: 'merino', playerName: 'Mikel Merino', assistPlayerId: 'dani-olmo', assistName: 'Dani Olmo' },
+  { minute: 81, type: 'yellow', teamId: 'arg', playerId: 'e-fernandez', playerName: 'Enzo Fernández' },
+  { minute: 91, type: 'yellow', teamId: 'arg', playerId: 'romero', playerName: 'Cristian Romero' },
+  { minute: 92, type: 'second_yellow', teamId: 'arg', playerId: 'e-fernandez', playerName: 'Enzo Fernández', detail: '兩黃一紅被逐（81 分鐘已領黃牌）' },
+  { minute: 96, type: 'var', teamId: 'esp', playerId: 'nico-williams', playerName: 'Nico Williams', detail: '入球被判無效：球證判 Mikel Merino 犯規在先，現場判罰維持', varOutcome: 'goal_disallowed' },
+  { minute: 98, type: 'sub', teamId: 'esp', playerId: 'zubimendi', playerName: 'Martín Zubimendi', assistPlayerId: 'rodri', assistName: 'Rodri' },
+  { minute: 98, type: 'sub', teamId: 'esp', playerId: 'eric-garcia', playerName: 'Eric García', assistPlayerId: 'laporte', assistName: 'Aymeric Laporte' },
+  { minute: 101, type: 'sub', teamId: 'arg', playerId: 'senesi', playerName: 'Marcos Senesi', assistPlayerId: 'alvarez', assistName: 'Julián Álvarez' },
+  { minute: null, type: 'yellow', teamId: 'arg', playerName: 'Lionel Scaloni', detail: '教練（約 104 分鐘領黃牌，確實分鐘未核實）' },
+  { minute: 106, type: 'goal', teamId: 'esp', playerId: 'torres', playerName: 'Ferran Torres', assistPlayerId: 'nico-williams', assistName: 'Nico Williams' },
+  { minute: 110, type: 'yellow', teamId: 'arg', playerId: 'mac-allister', playerName: 'Alexis Mac Allister' },
+  { minute: 113, type: 'var', teamId: 'esp', playerId: 'torres', playerName: 'Ferran Torres', detail: '入球因越位被判無效', varOutcome: 'goal_disallowed' },
+];
+
 const finalMatch: Match = {
   matchId: 'M104',
   stage: 'F',
@@ -440,9 +489,46 @@ const finalMatch: Match = {
   venueId: 'metlife',
   homeTeamId: 'esp',
   awayTeamId: 'arg',
-  status: 'scheduled',
-  score: { home: 0, away: 0 },
-  source: ESPN_PENDING,
+  status: 'ft',
+  score: {
+    home: 1,
+    away: 0,
+    halfTime: { home: 0, away: 0 },
+    extraTime: { home: 1, away: 0 },
+  },
+  events: finalEvents,
+  scorers: toScorers(finalEvents),
+  stats: {
+    possession: { home: 65, away: 35 },
+    shots: { home: 20, away: 2 },
+    shotsOnTarget: { home: 12, away: 0 },
+    corners: null, // 來源不一致，唔顯示
+    fouls: { home: 21, away: 25 },
+    offsides: { home: 2, away: 1 },
+    passAccuracy: { home: 89, away: 77 },
+    saves: { home: 0, away: 11 }, // Emiliano Martínez 11 次撲救（世界盃決賽紀錄）
+    xg: { home: 2.29, away: 0.22 }, // ESPN stats box
+  },
+  lineups: {
+    home: {
+      formation: '4-3-3',
+      coach: 'Luis de la Fuente',
+      starters: ['unai-simon', 'porro', 'cubarsi', 'laporte', 'cucurella', 'rodri', 'fabian-ruiz', 'lamine-yamal', 'dani-olmo', 'alex-baena', 'oyarzabal'],
+      bench: ['torres', 'pedri', 'nico-williams', 'merino', 'zubimendi', 'eric-garcia'],
+    },
+    away: {
+      formation: '4-4-2',
+      coach: 'Lionel Scaloni',
+      starters: ['e-martinez', 'montiel', 'romero', 'lisandro-martinez', 'tagliafico', 'mac-allister', 'de-paul', 'nico-gonzalez', 'e-fernandez', 'messi', 'alvarez'],
+      bench: ['otamendi', 'paredes', 'molina', 'medina', 'g-simeone', 'senesi'],
+    },
+  },
+  source: {
+    source: 'ESPN',
+    sourceUrl: 'https://www.espn.co.uk/football/match/_/gameId/760517/argentina-spain',
+    retrievedAt: '2026-07-20T00:00:00Z',
+    dataStatus: 'VERIFIED',
+  },
 };
 
 export const matches: Match[] = [

@@ -423,7 +423,7 @@ function DetailContent({ slug }: { slug: string }) {
                           第{minuteLabel(tp.minute, aet)}分鐘
                         </span>
                         <span className="text-caption text-text-3">
-                          {tp.eventType === 'goal' ? '入球' : tp.eventType === 'red_card' ? '紅牌' : '十二碼'}
+                          {tp.eventType === 'goal' ? '入球' : tp.eventType === 'red_card' ? '紅牌' : tp.eventType === 'var' ? 'VAR' : '十二碼'}
                         </span>
                         <span className="ml-auto inline-flex items-center gap-1.5 font-num text-caption text-text-2 tnum">
                           事件前 {tp.scoreBefore}

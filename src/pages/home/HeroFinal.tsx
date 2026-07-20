@@ -88,6 +88,19 @@ function HeroContent({
   const { timeZone, label } = useTimezone();
   const final = data.final as NonNullable<HomeMatchesData['final']>;
 
+  // 決賽已完場 → 冠軍狀態（勝方由比數推導；加時入球用嚟還原 90 分鐘比數）
+  const isFinished = final.status === 'finished';
+  const winner =
+    isFinished && final.homeScore != null && final.awayScore != null && final.homeScore !== final.awayScore
+      ? final.homeScore > final.awayScore
+        ? final.home
+        : final.away
+      : null;
+  const regulationScore =
+    isFinished && final.extraTime && final.homeScore != null && final.awayScore != null
+      ? `${final.homeScore - final.extraTime.home}–${final.awayScore - final.extraTime.away}`
+      : null;
+
   // Last-updated chip：provider lastUpdated 相對時間,每 30s tick 一次
   const [tick, setTick] = useState(() => Date.now());
   useEffect(() => {
@@ -216,25 +229,48 @@ function HeroContent({
       />
 
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-4 py-16 text-center md:px-6">
-        <p className="hero-intro text-label text-gold">2026 FIFA WORLD CUP · {final.stage}</p>
+        <p className="hero-intro text-label text-gold">
+          2026 FIFA WORLD CUP · {final.stage}
+          {winner && ' · 冠軍誕生'}
+        </p>
 
-        <h1 id="hero-title" className="mt-4 font-display font-bold text-foreground">
-          <span className="block overflow-hidden text-4xl leading-[1.15] md:text-6xl">
-            {'決賽日'.split('').map((c, i) => (
-              <span key={i} className="hero-word inline-block will-change-transform">
-                {c}
-              </span>
-            ))}
-          </span>
-          <span className="mt-2 block overflow-hidden text-2xl leading-[1.2] md:text-4xl">
-            {[final.home.name, 'vs', final.away.name].map((w, i) => (
-              <span key={i} className="hero-word inline-block will-change-transform">
-                {w}
-                {i < 2 && ' '}
-              </span>
-            ))}
-          </span>
-        </h1>
+        {winner ? (
+          <h1 id="hero-title" className="mt-4 font-display font-bold text-foreground">
+            <span className="block overflow-hidden text-4xl leading-[1.15] md:text-6xl">
+              {`${winner.name}奪得 2026 世界盃`.split('').map((c, i) => (
+                <span key={i} className="hero-word inline-block will-change-transform">
+                  {c}
+                </span>
+              ))}
+            </span>
+            <span className="mt-2 block overflow-hidden text-2xl leading-[1.2] md:text-4xl">
+              {[final.home.name, `${final.homeScore}–${final.awayScore}`, final.away.name].map((w, i) => (
+                <span key={i} className="hero-word inline-block will-change-transform">
+                  {w}
+                  {i < 2 && ' '}
+                </span>
+              ))}
+            </span>
+          </h1>
+        ) : (
+          <h1 id="hero-title" className="mt-4 font-display font-bold text-foreground">
+            <span className="block overflow-hidden text-4xl leading-[1.15] md:text-6xl">
+              {'決賽日'.split('').map((c, i) => (
+                <span key={i} className="hero-word inline-block will-change-transform">
+                  {c}
+                </span>
+              ))}
+            </span>
+            <span className="mt-2 block overflow-hidden text-2xl leading-[1.2] md:text-4xl">
+              {[final.home.name, 'vs', final.away.name].map((w, i) => (
+                <span key={i} className="hero-word inline-block will-change-transform">
+                  {w}
+                  {i < 2 && ' '}
+                </span>
+              ))}
+            </span>
+          </h1>
+        )}
 
         <div className="mt-8 flex items-center gap-6 md:gap-10">
           {crestLink(final.home, crestLRef)}
@@ -242,16 +278,29 @@ function HeroContent({
           {crestLink(final.away, crestRRef)}
         </div>
 
-        <div ref={countdownRef} className="mt-10">
-          <CountdownTimer targetIso={final.kickoffUtc} size="lg" onZero={onCountdownZero} />
-        </div>
+        {winner ? (
+          <div ref={countdownRef} className="hero-anim mt-10 text-center">
+            <p className="font-num text-5xl font-bold tracking-tight text-foreground tnum md:text-6xl">
+              {final.homeScore}–{final.awayScore}
+            </p>
+            <p className="mt-2 text-sm text-text-2">
+              加時後完場{regulationScore ? `（90 分鐘 ${regulationScore}）` : ''}
+            </p>
+          </div>
+        ) : (
+          <div ref={countdownRef} className="mt-10">
+            <CountdownTimer targetIso={final.kickoffUtc} size="lg" onZero={onCountdownZero} />
+          </div>
+        )}
 
-        <p className="hero-intro mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-text-2">
-          <span key={label} className="animate-in fade-in duration-200">
-            開賽:{kickoffLabel(final.kickoffUtc, timeZone)} {label}
-          </span>
-          <TimezoneToggle />
-        </p>
+        {!winner && (
+          <p className="hero-intro mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-text-2">
+            <span key={label} className="animate-in fade-in duration-200">
+              開賽:{kickoffLabel(final.kickoffUtc, timeZone)} {label}
+            </span>
+            <TimezoneToggle />
+          </p>
+        )}
 
         <div className="hero-intro mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-caption text-text-3">
           <span className="inline-flex items-center gap-1.5">
@@ -274,12 +323,21 @@ function HeroContent({
           >
             {finalStarted ? '決賽 Match Centre' : '進入 Match Centre'}
           </Link>
-          <Link
-            to="/bracket"
-            className="inline-flex min-h-11 items-center rounded-md border border-border-strong px-6 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent hover:text-accent"
-          >
-            查看淘汰賽之路
-          </Link>
+          {winner ? (
+            <Link
+              to={`/analysis/${final.id}`}
+              className="inline-flex min-h-11 items-center rounded-md border border-border-strong px-6 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent hover:text-accent"
+            >
+              決賽賽後分析
+            </Link>
+          ) : (
+            <Link
+              to="/bracket"
+              className="inline-flex min-h-11 items-center rounded-md border border-border-strong px-6 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent hover:text-accent"
+            >
+              查看淘汰賽之路
+            </Link>
+          )}
         </div>
       </div>
 

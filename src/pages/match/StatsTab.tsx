@@ -24,6 +24,7 @@ const METRICS: MetricDef[] = [
   { key: 'fouls', label: '犯規' },
   { key: 'offsides', label: '越位' },
   { key: 'passAccuracy', label: '傳球成功率', format: (v) => `${v}%`, max: 100 },
+  { key: 'saves', label: '撲救' },
   { key: 'yellowCards', label: '黃牌' },
   { key: 'redCards', label: '紅牌' },
   { key: 'xg', label: '預期入球 (xG)', format: (v) => v.toFixed(2) },

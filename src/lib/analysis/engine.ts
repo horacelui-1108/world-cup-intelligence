@@ -155,6 +155,8 @@ export function generateAnalysis(match: Match, ctx: AnalysisContext): MatchAnaly
   }
   if (match.stage === '3P' && winnerId) {
     summaryText += `${teamZh(winnerId)}奪得季軍〔S1〕。`;
+  } else if (match.stage === 'F' && winnerId) {
+    summaryText += `${teamZh(winnerId)}奪得冠軍〔S1〕。`;
   } else if (winnerId && match.stage !== 'GROUP' && match.stage !== 'F') {
     summaryText += `${teamZh(winnerId)}晉級〔S1〕。`;
   }
@@ -299,6 +301,19 @@ export function generateAnalysis(match: Match, ctx: AnalysisContext): MatchAnaly
         },
       });
     }
+    // 事件發生時嘅即場比數（按已核實入球分鐘重放；用於紅牌/VAR 轉捩點，避免誤顯示完場比數）
+    const scoreAt = (minute: number): string => {
+      let sh = 0;
+      let sa = 0;
+      for (const g of timedGoals) {
+        if ((g.minute as number) > minute) break;
+        const scoringTeam =
+          g.type === 'own_goal' ? (g.teamId === match.homeTeamId ? match.awayTeamId : match.homeTeamId) : g.teamId;
+        if (scoringTeam === match.homeTeamId) sh += 1;
+        else sa += 1;
+      }
+      return `${sh}–${sa}`;
+    };
     for (const e of events) {
       if ((e.type === 'red' || e.type === 'second_yellow') && e.minute !== null) {
         cands.push({
@@ -310,7 +325,25 @@ export function generateAnalysis(match: Match, ctx: AnalysisContext): MatchAnaly
               text: `第${fmtMinute(e.minute, aet)}分鐘，${playerZh(e.playerId, e.playerName)}（${teamZh(e.teamId)}）被紅牌逐出〔S1〕。${teamZh(e.teamId)}其後十人應戰。`,
               sourceRefs: [ref('events')],
             },
-            scoreBefore: scoreStr,
+            scoreBefore: scoreAt(e.minute),
+            rank: 0,
+          },
+        });
+      }
+      // VAR 取消入球同屬轉捩點候選（比數維持不變）
+      if (e.type === 'var' && e.varOutcome === 'goal_disallowed' && e.minute !== null) {
+        const at = scoreAt(e.minute);
+        cands.push({
+          weight: 2,
+          tp: {
+            eventType: 'var',
+            minute: e.minute,
+            description: {
+              text: `第${fmtMinute(e.minute, aet)}分鐘，${playerZh(e.playerId, e.playerName)}（${teamZh(e.teamId)}）入球經 VAR 覆核後被取消〔S1〕，比數維持 ${at}〔S1〕。`,
+              sourceRefs: [ref('events')],
+            },
+            scoreBefore: at,
+            scoreAfter: at,
             rank: 0,
           },
         });

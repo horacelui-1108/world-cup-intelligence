@@ -110,6 +110,7 @@ export function toMatchRef(match: Match, dataMode: DataMode, resultLastUpdated: 
       match.status === 'ft' ? 'finished' : match.status === 'live' || match.status === 'ht' ? 'live' : 'scheduled',
     homeScore: match.status === 'scheduled' || match.status === 'postponed' ? undefined : match.score.home,
     awayScore: match.status === 'scheduled' || match.status === 'postponed' ? undefined : match.score.away,
+    extraTime: match.score.extraTime,
     scorers: scorerLines(match),
     meta: toUiMeta(match.source, resultLastUpdated, dataMode, match.matchId),
   };

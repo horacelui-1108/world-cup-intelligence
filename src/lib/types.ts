@@ -38,6 +38,8 @@ export interface MatchRef {
   status: MatchStatus;
   homeScore?: number;
   awayScore?: number;
+  /** 加時階段入球（AET 場次，如決賽；唔包含法定時間） */
+  extraTime?: { home: number; away: number };
   minute?: number;
   scorers?: string[];
   meta: SourceMeta;

@@ -153,11 +153,15 @@ export interface MatchStats {
   passAccuracy?: StatPair | null;
   yellowCards?: StatPair | null;
   redCards?: StatPair | null;
+  /** 門將撲救（如來源提供，如 M104 Emiliano Martínez 11 次） */
+  saves?: StatPair | null;
   xg?: StatPair | null;
 }
 
 export interface Lineup {
   formation?: string;
+  /** 領隊姓名（如有核實來源先填，如決賽雙方教練） */
+  coach?: string;
   /** 正選球員 id */
   starters: string[];
   bench?: string[];

@@ -1,13 +1,69 @@
 /**
- * 賽事重要消息（7 條）— 全部基於 data-research-brief.md 已核實事實。
- * 每條帶 SourceMeta（ESPN sourceUrl，VERIFIED；決賽消息 PENDING）。
+ * 賽事重要消息（12 條）— 全部基於 data-research-brief.md 已核實事實。
+ * 每條帶 SourceMeta（ESPN/AP/Olympics sourceUrl，VERIFIED；決賽前消息保留 PENDING 原狀）。
  */
 import type { NewsItem, SourceMeta } from '../types/football';
 import { ESPN_VERIFIED } from './matches';
 
 const src = (overrides?: Partial<SourceMeta>): SourceMeta => ({ ...ESPN_VERIFIED, ...overrides });
 
+/** 決賽後消息統一擷取時間 */
+const FINAL_RETIEVED = '2026-07-20T00:00:00Z';
+
 export const news: NewsItem[] = [
+  {
+    id: 'n8',
+    title: '西班牙加時 1–0 勝阿根廷，奪隊史第二座世界盃',
+    summary:
+      '2026 世界盃決賽，西班牙憑費蘭·托利斯（Ferran Torres）106 分鐘加時入球，1–0 擊敗衛冕嘅阿根廷，' +
+      '奪得隊史第二座世界盃冠軍。阿根廷嘅安素·費南迪斯補時兩黃一紅被逐。',
+    publishedAt: '2026-07-19T23:05:00Z',
+    source: src({
+      source: 'AP',
+      sourceUrl: 'https://apnews.com/hub/fifa-world-cup',
+      retrievedAt: FINAL_RETIEVED,
+    }),
+  },
+  {
+    id: 'n9',
+    title: '世界盃頒獎：洛迪奪金球獎、烏尼·施蒙獲金手套、古巴斯最佳年青球員',
+    summary:
+      '頒獎禮公布：Golden Ball 洛迪（西班牙）、Silver Ball 美斯（阿根廷）、Bronze Ball 麥巴比（法國）；' +
+      'Golden Glove 烏尼·施蒙（西班牙，8 場 7 次零封僅失 1 球）；最佳年青球員柏奧·古巴斯（西班牙）。',
+    publishedAt: '2026-07-19T23:20:00Z',
+    source: src({
+      source: 'Olympics.com',
+      sourceUrl: 'https://www.olympics.com/en/news/football',
+      retrievedAt: FINAL_RETIEVED,
+    }),
+  },
+  {
+    id: 'n10',
+    title: '麥巴比 10 球奪金靴：首位兩奪世界盃金靴',
+    summary:
+      '麥巴比（Kylian Mbappé）以 10 球奪得今屆 Golden Boot，成為首位兩奪世界盃金靴嘅球員；' +
+      '佢嘅世界盃總入球達 22 球，刷新紀錄。',
+    publishedAt: '2026-07-19T23:35:00Z',
+    source: src({ retrievedAt: FINAL_RETIEVED }),
+  },
+  {
+    id: 'n11',
+    title: '西班牙冠軍之路寫多項紀錄：8 場僅失 1 球、38 場不敗',
+    summary:
+      '西班牙今屆 8 場僅失 1 球，創冠軍球隊最少失球紀錄，全屆未曾落後；各項賽事 38 場不敗，' +
+      '為歐洲男子國家隊最長不敗紀錄。迪拉富恩迪（Luis de la Fuente）成為最老嘅世界盃冠軍教練。',
+    publishedAt: '2026-07-19T23:50:00Z',
+    source: src({ retrievedAt: FINAL_RETIEVED }),
+  },
+  {
+    id: 'n12',
+    title: 'E.馬天尼斯決賽 11 次撲救創紀錄，仍難救阿根廷',
+    summary:
+      '阿根廷門將艾米利安奴·馬天尼斯（Emiliano Martínez）決賽作出 11 次撲救，創世界盃決賽單場撲救紀錄，' +
+      '但阿根廷加時仍 0–1 不敵西班牙，衛冕失敗。',
+    publishedAt: '2026-07-19T23:55:00Z',
+    source: src({ retrievedAt: FINAL_RETIEVED }),
+  },
   {
     id: 'n1',
     title: '決賽今日舉行：西班牙 vs 阿根廷',
