@@ -132,6 +132,9 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* 全域水平溢出防線：入場動畫（x offset）同出血裝飾唔可以造成頁面橫向捲動。
+       用 clip（唔係 hidden）避免破壞 position: sticky。 */
+    overflow-x: clip;
   }
 
   body {
@@ -141,6 +144,7 @@
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
   }
 
   h1, h2, h3, h4 {
