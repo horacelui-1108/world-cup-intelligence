@@ -47,8 +47,21 @@ export default function MatchLog({ player, contributions }: MatchLogProps) {
     );
   }
 
+  // 對數提示：stats 總數（已核實賽事總數）可能多過事件級明細（只有部分場次有 events）
+  const loggedGoals = contributions.reduce((n, c) => n + c.goals.length, 0);
+  const loggedAssists = contributions.reduce((n, c) => n + c.assists.length, 0);
+  const totalGoals = player.stats?.goals ?? loggedGoals;
+  const totalAssists = player.stats?.assists ?? loggedAssists;
+  const hasGap = totalGoals > loggedGoals || totalAssists > loggedAssists;
+
   return (
     <>
+      {hasGap && (
+        <p className="mb-3 rounded-md border border-border bg-surface-2 px-3 py-2 text-caption leading-relaxed text-text-2">
+          逐場明細只涵蓋有事件級數據嘅場次（入球 {loggedGoals}/{totalGoals}、助攻 {loggedAssists}/{totalAssists}）；
+          其餘貢獻來自已核實嘅賽事總數，相關場次暫無事件紀錄。
+        </p>
+      )}
       {/* Desktop table */}
       <div className="hidden overflow-hidden rounded-md border border-border bg-surface md:block">
         <table className="w-full text-sm">

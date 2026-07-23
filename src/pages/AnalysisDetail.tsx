@@ -87,6 +87,25 @@ function SectionHeader({ num, title, id }: { num: string; title: string; id: str
   );
 }
 
+/** 數據結論欄位晶片：fieldPath → 中文標籤（原始路徑保留喺 title tooltip） */
+const FIELD_LABELS: Record<string, string> = {
+  score: '比數',
+  scorers: '入球球員',
+  events: '比賽事件',
+  lineups: '陣容',
+  'stats.possession': '控球率',
+  'stats.shots': '射門',
+  'stats.shotsOnTarget': '射正',
+  'stats.corners': '角球',
+  'stats.fouls': '犯規',
+  'stats.offsides': '越位',
+  'stats.passAccuracy': '傳球成功率',
+  'stats.xg': '預期入球',
+};
+function fieldLabel(fieldPath: string): string {
+  return FIELD_LABELS[fieldPath] ?? fieldPath;
+}
+
 /** 資料不足 placeholder（framework M0／analysis-detail §3：章節標題仍顯示） */
 function InsufficientNotice() {
   return (
@@ -570,8 +589,12 @@ function DetailContent({ slug }: { slug: string }) {
                       </p>
                       <p className="mt-2 flex flex-wrap gap-1.5">
                         {dc.fields.map((f) => (
-                          <span key={f} className="rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] text-text-3">
-                            {f}
+                          <span
+                            key={f}
+                            title={`數據欄位路徑：${f}`}
+                            className="rounded-sm bg-surface-2 px-1.5 py-0.5 text-[10px] text-text-3"
+                          >
+                            數據欄位：{fieldLabel(f)}
                           </span>
                         ))}
                       </p>

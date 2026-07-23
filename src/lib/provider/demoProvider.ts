@@ -122,12 +122,13 @@ class DemoProvider implements FootballDataProvider {
 
   async getAnalysis(matchId: string): Promise<ProviderResult<MatchAnalysis>> {
     const { data: match, source } = await this.getMatch(matchId);
-    const analysis = generateAnalysis(match, buildAnalysisContext('demo'));
+    // demo 模式：發佈時間釘喺數據快照時間（唔係訪問當刻），避免每次睇都變
+    const analysis = generateAnalysis(match, buildAnalysisContext('demo', ESPN_VERIFIED.retrievedAt));
     return wrap(analysis, source);
   }
 
   async listAnalyses(): Promise<ProviderResult<MatchAnalysis[]>> {
-    const ctx = buildAnalysisContext('demo');
+    const ctx = buildAnalysisContext('demo', ESPN_VERIFIED.retrievedAt);
     return wrap(matches.filter((m) => m.status === 'ft').map((m) => generateAnalysis(m, ctx)));
   }
 }
