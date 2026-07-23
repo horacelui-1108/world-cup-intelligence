@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="COD crest">
+<defs><clipPath id="c"><circle cx="48" cy="48" r="46"/></clipPath></defs>
+<g clip-path="url(#c)">
+<rect x="0" y="0" width="96" height="96" fill="#007FFF"/><polygon points="0 66 96 10 96 30 0 86" fill="#F7D618" /><polygon points="0 72 96 16 96 24 0 80" fill="#CE1021" /><path d="M20.0 13.0L22.1 19.1L28.6 19.2L23.4 23.1L25.3 29.3L20.0 25.6L14.7 29.3L16.6 23.1L11.4 19.2L17.9 19.1Z" fill="#F7D618" />
+<rect x="0" y="0" width="96" height="96" fill="none"/>
+</g>
+<circle cx="48" cy="48" r="46" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2"/>
+<text x="48" y="50" text-anchor="middle" dominant-baseline="central" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="800" font-size="19" letter-spacing="1.5" fill="#FFFFFF" stroke="rgba(0,0,0,0.45)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">COD</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" role="img" aria-label="球員">
+  <!-- Neutral player silhouette, torso-up; colour inherits via currentColor -->
+  <g fill="currentColor">
+    <circle cx="100" cy="66" r="34"/>
+    <path d="M 100 108 C 58 108 30 138 26 200 L 174 200 C 170 138 142 108 100 108 Z"/>
+  </g>
+</svg>
