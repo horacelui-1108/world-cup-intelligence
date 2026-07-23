@@ -297,7 +297,7 @@ export default function Analysis() {
               />
 
               <p aria-live="polite" className="ml-auto text-caption text-text-3">
-                顯示 {Math.min(visibleCount, gridEntries.length)} / {gridEntries.length} 篇
+                顯示 {Math.min(visibleCount, gridEntries.length)} / {gridEntries.length} 篇{featured ? '（另有 1 篇精選）' : ''}
               </p>
             </div>
           </form>

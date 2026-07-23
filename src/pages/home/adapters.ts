@@ -358,7 +358,7 @@ export function buildNewsCards(news: NewsItem[], dataMode: DataMode, finalMatchI
       timestamp: item.publishedAt,
       summary: item.summary,
       relatedMatchId: finalMatchId && /決賽/.test(text) ? finalMatchId : undefined,
-      thumb: /MetLife/i.test(text) ? '/stadium-metlife.jpg' : undefined,
+      thumb: /MetLife/i.test(text) ? asset('/stadium-metlife.jpg') : undefined,
       status: toUiDataStatus(dataMode, item.source.dataStatus),
       meta: toUiMeta(item.source, item.publishedAt, dataMode),
     };

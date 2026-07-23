@@ -35,6 +35,7 @@ const chrome = {
   'common.loading': { tc: '載入中…', en: 'Loading…' },
   'common.lastUpdated': { tc: '最後更新', en: 'Last updated' },
   'common.favorite': { tc: '收藏', en: 'Favorite' },
+  'common.dismiss': { tc: '關閉', en: 'Dismiss' },
   'common.unfavorite': { tc: '取消收藏', en: 'Remove favorite' },
 } as const;
 

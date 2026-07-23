@@ -402,7 +402,9 @@ export function generateAnalysis(match: Match, ctx: AnalysisContext): MatchAnaly
   const keySubstitutions: KeySubstitution[] = [];
   {
     const subs = events.filter((e) => e.type === 'sub' && e.minute !== null);
-    for (const sub of subs.slice(0, 2)) {
+    // 評估全部換人，按影響力排序後取頭兩個（曾修復：舊邏輯 slice(0,2) 只睇最早兩個換人，會漏咗後備建功嘅球員）
+    const cands: { ks: KeySubstitution; weight: number }[] = [];
+    for (const sub of subs) {
       const subMinute = sub.minute as number;
       const inName = playerZh(sub.playerId, sub.playerName);
       const laterImpact = timedGoals.find(
@@ -412,27 +414,39 @@ export function generateAnalysis(match: Match, ctx: AnalysisContext): MatchAnaly
         (g) => (g.minute as number) > subMinute && (g.minute as number) <= subMinute + 15,
       );
       if (laterImpact) {
-        keySubstitutions.push({
-          minute: subMinute,
-          playerIn: inName,
-          playerOut: sub.detail ?? '',
-          impact: {
-            text: `第${fmtMinute(subMinute, aet)}分鐘，${teamZh(sub.teamId)}以${inName}入替〔S1〕；${inName}其後於第${fmtMinute(laterImpact.minute as number, aet)}分鐘取得入球或助攻〔S1〕。`,
-            sourceRefs: [ref('events')],
+        cands.push({
+          weight: 2,
+          ks: {
+            minute: subMinute,
+            playerIn: inName,
+            playerOut: sub.detail ?? '',
+            impact: {
+              text: `第${fmtMinute(subMinute, aet)}分鐘，${teamZh(sub.teamId)}以${inName}入替〔S1〕；${inName}其後於第${fmtMinute(laterImpact.minute as number, aet)}分鐘取得入球或助攻〔S1〕。`,
+              sourceRefs: [ref('events')],
+            },
           },
         });
       } else if (scoreChangedSoon) {
-        keySubstitutions.push({
-          minute: subMinute,
-          playerIn: inName,
-          playerOut: sub.detail ?? '',
-          impact: {
-            text: `第${fmtMinute(subMinute, aet)}分鐘，${teamZh(sub.teamId)}以${inName}入替〔S1〕；換人後十五分鐘內場上比數改變〔S1〕。`,
-            sourceRefs: [ref('events')],
+        cands.push({
+          weight: 1,
+          ks: {
+            minute: subMinute,
+            playerIn: inName,
+            playerOut: sub.detail ?? '',
+            impact: {
+              text: `第${fmtMinute(subMinute, aet)}分鐘，${teamZh(sub.teamId)}以${inName}入替〔S1〕；換人後十五分鐘內場上比數改變〔S1〕。`,
+              sourceRefs: [ref('events')],
+            },
           },
         });
       }
     }
+    keySubstitutions.push(
+      ...cands
+        .sort((a, b) => b.weight - a.weight || a.ks.minute - b.ks.minute)
+        .slice(0, 2)
+        .map((c) => c.ks),
+    );
   }
 
   // ---- (g) 數據支持嘅結論（3–5 點；只用存在嘅 stats 欄位，每點最多 2 個欄位） ----
