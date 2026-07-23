@@ -8,7 +8,7 @@ import { TimezoneProvider } from '@/lib/timezone';
 
 // Note: no React.StrictMode — canvas/GSAP effects must not run twice.
 createRoot(document.getElementById('root')!).render(
-  <BrowserRouter>
+  <BrowserRouter basename={import.meta.env.BASE_URL}>
     <ThemeProvider>
       <LangProvider>
         <TimezoneProvider>
