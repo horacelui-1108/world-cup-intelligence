@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="BIH crest">
+<defs><clipPath id="c"><circle cx="48" cy="48" r="46"/></clipPath></defs>
+<g clip-path="url(#c)">
+<rect x="0" y="0" width="96" height="96" fill="#002395"/><polygon points="38 0 96 0 96 96 70 96" fill="#FECB00" /><path d="M26.0 7.0L27.2 10.4L30.8 10.5L27.9 12.6L28.9 16.0L26.0 14.0L23.1 16.0L24.1 12.6L21.2 10.5L24.8 10.4Z" fill="#FFFFFF" /><path d="M36.9 22.0L35.9 25.4L38.8 27.5L35.2 27.6L34.0 31.0L32.8 27.6L29.2 27.5L32.1 25.4L31.1 22.0L34.0 24.0Z" fill="#FFFFFF" /><path d="M44.9 36.0L43.9 39.4L46.8 41.5L43.2 41.6L42.0 45.0L40.8 41.6L37.2 41.5L40.1 39.4L39.1 36.0L42.0 38.0Z" fill="#FFFFFF" /><path d="M52.9 50.0L51.9 53.4L54.8 55.5L51.2 55.6L50.0 59.0L48.8 55.6L45.2 55.5L48.1 53.4L47.1 50.0L50.0 52.0Z" fill="#FFFFFF" />
+<rect x="0" y="0" width="96" height="96" fill="none"/>
+</g>
+<circle cx="48" cy="48" r="46" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2"/>
+<text x="48" y="50" text-anchor="middle" dominant-baseline="central" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="800" font-size="19" letter-spacing="1.5" fill="#FFFFFF" stroke="rgba(0,0,0,0.45)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">BIH</text>
+</svg>

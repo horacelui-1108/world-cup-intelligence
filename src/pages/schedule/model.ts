@@ -17,6 +17,7 @@ import type { MatchRef, SourceMeta as UiSourceMeta, TeamRef } from '@/lib/types'
 import { teams, teamsById } from '@/data/teams';
 import { venuesById } from '@/data/venues';
 import { players } from '@/data/players';
+import { asset } from '@/lib/asset';
 
 export const GROUP_LETTERS: GroupLetter[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
 
@@ -94,7 +95,7 @@ export function venueOf(id: string): Venue | undefined {
 
 /** 48 隊隊徽全部喺 /crests/crest-{teamId}.svg */
 export function crestPath(teamId: string): string {
-  return `/crests/crest-${teamId}.svg`;
+  return asset(`/crests/crest-${teamId}.svg`);
 }
 
 export function teamNameZh(id: string): string {

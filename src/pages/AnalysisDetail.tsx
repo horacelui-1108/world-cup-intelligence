@@ -49,6 +49,7 @@ import {
   toTeamRef,
   type AnalysisEntry,
 } from './analysis/model';
+import { asset } from '@/lib/asset';
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -274,7 +275,7 @@ function DetailContent({ slug }: { slug: string }) {
       {/* ===== Article hero ===== */}
       <header className="relative overflow-hidden border-b border-border">
         <img
-          src="/analysis-texture.jpg"
+          src={asset("/analysis-texture.jpg")}
           alt=""
           className="absolute inset-0 h-full w-full object-cover opacity-35"
         />
@@ -456,7 +457,7 @@ function DetailContent({ slug }: { slug: string }) {
                 {analysis.keyPlayers.content.map((kp) => (
                   <div key={kp.playerId} className="rounded-md border border-border bg-surface p-4">
                     <div className="flex items-center gap-3">
-                      <img src="/player-silhouette.svg" alt="" width={40} height={40} className="rounded-full border border-border bg-surface-2" />
+                      <img src={asset("/player-silhouette.svg")} alt="" width={40} height={40} className="rounded-full border border-border bg-surface-2" />
                       <div className="min-w-0">
                         <Link
                           to={`/players/${kp.playerId}`}

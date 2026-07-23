@@ -6,6 +6,7 @@ import EmptyState from '@/components/EmptyState';
 import { cn } from '@/lib/utils';
 import { POSITION_LABELS, POSITION_ORDER } from './data';
 import { SegmentedControl } from './widgets';
+import { asset } from '@/lib/asset';
 
 type SortKey = 'position' | 'goals' | 'appearances';
 
@@ -150,7 +151,7 @@ export default function SquadTable({ players }: SquadTableProps) {
                         aria-label={`${p.nameZh}（${p.nameEn}）球員頁`}
                       >
                         <img
-                          src="/player-silhouette.svg"
+                          src={asset("/player-silhouette.svg")}
                           alt=""
                           width={40}
                           height={40}

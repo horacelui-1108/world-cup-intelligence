@@ -15,6 +15,7 @@ import { kickoffLabel, relativePast } from '@/lib/format';
 import type { TeamRef } from '@/lib/types';
 import type { AsyncSlice } from './useHomeData';
 import type { HomeMatchesData } from './adapters';
+import { asset } from '@/lib/asset';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -202,7 +203,7 @@ function HeroContent({
     >
       {/* background: hero-final.jpg at 45% + --bg gradient overlay 92%→60% */}
       <img
-        src="/hero-final.jpg"
+        src={asset("/hero-final.jpg")}
         alt=""
         aria-hidden
         className="absolute inset-0 h-full w-full object-cover"

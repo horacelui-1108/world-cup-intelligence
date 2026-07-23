@@ -11,6 +11,7 @@ import type { DataStatus, MatchRef, TeamRef } from '@/lib/types';
 import { teams } from '@/data/teams';
 import { playersById } from '@/data/players';
 import { getVenueById } from '@/data/venues';
+import { asset } from '@/lib/asset';
 
 export const teamsById: ReadonlyMap<string, Team> = new Map(teams.map((t) => [t.id, t]));
 
@@ -43,7 +44,7 @@ export function stageLabel(match: Match): string {
 
 /** 隊徽路徑 — 48 隊全部有 /crests/crest-{teamId}.svg */
 export function crestSrc(teamId: string): string {
-  return `/crests/crest-${teamId}.svg`;
+  return asset(`/crests/crest-${teamId}.svg`);
 }
 
 export function toTeamRef(team: Team): TeamRef {

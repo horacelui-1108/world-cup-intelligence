@@ -6,6 +6,7 @@ import type { SourceMeta as UiSourceMeta } from '@/lib/types';
 import DataStatusBadge from '@/components/DataStatusBadge';
 import MatchCard from '@/components/MatchCard';
 import { stageFullLabel, statusText, toMatchRef, venueOf } from '@/pages/schedule/model';
+import { asset } from '@/lib/asset';
 
 const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const HKT = 'Asia/Hong_Kong';
@@ -96,7 +97,7 @@ export default function InfoTab({ match, meta, related }: InfoTabProps) {
           className="overflow-hidden rounded-md border border-border"
         >
           <img
-            src="/stadium-metlife.jpg"
+            src={asset("/stadium-metlife.jpg")}
             alt="MetLife Stadium 外觀(綠金雙色調)"
             className="aspect-video w-full object-cover"
             loading="lazy"

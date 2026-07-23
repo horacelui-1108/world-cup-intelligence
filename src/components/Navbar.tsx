@@ -15,6 +15,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LangToggle from '@/components/LangToggle';
 import TimezoneToggle from '@/components/TimezoneToggle';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { asset } from '@/lib/asset';
 
 const NAV_ITEMS: { to: string; key: ChromeKey; icon: typeof Home }[] = [
   { to: '/', key: 'nav.home', icon: Home },
@@ -59,7 +60,7 @@ function Logo() {
   const { t } = useLang();
   return (
     <Link to="/" className="flex items-center gap-2" aria-label={t('app.fullName')}>
-      <img src="/logo.svg" alt="" width={28} height={28} />
+      <img src={asset("/logo.svg")} alt="" width={28} height={28} />
       <span className="font-display text-base font-bold tracking-wide text-foreground">
         {t('app.name')}
       </span>

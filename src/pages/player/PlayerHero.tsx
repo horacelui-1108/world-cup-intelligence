@@ -6,6 +6,7 @@ import type { DataMode } from '@/types/football';
 import DataStatusBadge from '@/components/DataStatusBadge';
 import { Crest } from '@/components/TeamChip';
 import { badgeStatus, POSITION_LABELS, toTeamRef } from '../team/data';
+import { asset } from '@/lib/asset';
 
 interface PlayerHeroProps {
   player: Player;
@@ -37,7 +38,7 @@ export default function PlayerHero({ player, team, scorerRank, source, dataMode 
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <img
-              src="/player-silhouette.svg"
+              src={asset("/player-silhouette.svg")}
               alt={`${player.nameZh}頭像`}
               width={120}
               height={120}

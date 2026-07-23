@@ -5,6 +5,7 @@
 import type { MatchAnalysis, SourceRef, DataTier, KeyPlayer } from '@/lib/analysis/types';
 import type { Match, Stage, Team } from '@/types/football';
 import type { TeamRef } from '@/lib/types';
+import { asset } from '@/lib/asset';
 
 /** 階段標籤（列表 chip 用） */
 export const STAGE_LABEL: Record<Stage, string> = {
@@ -51,7 +52,7 @@ export function toTeamRef(t: Team): TeamRef {
     id: t.id,
     name: t.nameZh,
     shortName: t.code3,
-    crest: `/crests/crest-${t.id}.svg`,
+    crest: asset(`/crests/crest-${t.id}.svg`),
     ranking: t.rank,
   };
 }

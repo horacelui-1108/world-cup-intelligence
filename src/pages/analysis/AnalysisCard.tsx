@@ -21,6 +21,7 @@ import {
   toTeamRef,
   type AnalysisEntry,
 } from './model';
+import { asset } from '@/lib/asset';
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -135,7 +136,7 @@ export function FeaturedAnalysisCard({
         {/* 左：duotone 處理嘅 analysis texture */}
         <div className="relative min-h-48 overflow-hidden md:min-h-full">
           <motion.img
-            src="/analysis-texture.jpg"
+            src={asset("/analysis-texture.jpg")}
             alt=""
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
             animate={{ clipPath: 'inset(0 0 0% 0)' }}

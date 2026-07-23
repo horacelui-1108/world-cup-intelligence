@@ -9,6 +9,7 @@ import { fullDateLabel, timeLabel } from '@/lib/format';
 import { getVenueById } from '@/data/venues';
 import { teamRefOf } from '@/pages/standings/teamRef';
 import { winnerOf } from '@/pages/bracket/bracketModel';
+import { asset } from '@/lib/asset';
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -41,7 +42,7 @@ export default function FinalSpotlight({ final }: { final: Match }) {
         {/* hero 圖 */}
         <div className="relative h-44 md:h-full md:min-h-64">
           <img
-            src="/hero-final.jpg"
+            src={asset("/hero-final.jpg")}
             alt="決賽球場暮色"
             className="absolute inset-0 h-full w-full object-cover"
             loading="lazy"

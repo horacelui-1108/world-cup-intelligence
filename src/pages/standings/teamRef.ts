@@ -4,9 +4,10 @@
  */
 import { getTeamById } from '@/data/teams';
 import type { TeamRef } from '@/lib/types';
+import { asset } from '@/lib/asset';
 
 export function crestPath(teamId: string): string {
-  return `/crests/crest-${teamId}.svg`;
+  return asset(`/crests/crest-${teamId}.svg`);
 }
 
 /** 未識別 teamId（例如淘汰賽待定席位）時回傳佔位 */

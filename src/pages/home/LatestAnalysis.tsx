@@ -11,6 +11,7 @@ import { useTimezone } from '@/lib/timezone';
 import { kickoffLabel } from '@/lib/format';
 import type { AsyncSlice } from './useHomeData';
 import type { AnalysisCardData } from './adapters';
+import { asset } from '@/lib/asset';
 
 /**
  * Home Section 6 — 最新賽後分析（listAnalyses() 最新 4 篇:featured 1 + compact 3）。
@@ -60,7 +61,7 @@ export default function LatestAnalysis({ slice }: { slice: AsyncSlice<AnalysisCa
               <Link to={`/analysis/${featured.slug}`} className="group block">
                 <div className="relative aspect-video overflow-hidden">
                   <img
-                    src="/analysis-texture.jpg"
+                    src={asset("/analysis-texture.jpg")}
                     alt=""
                     aria-hidden
                     className="h-full w-full object-cover opacity-70 transition-transform [transition-duration:400ms] group-hover:scale-[1.03]"
@@ -123,7 +124,7 @@ export default function LatestAnalysis({ slice }: { slice: AsyncSlice<AnalysisCa
                   className="group flex gap-3 rounded-md border border-border bg-surface p-3 transition-colors duration-200 hover:border-border-strong"
                 >
                   <img
-                    src="/analysis-texture.jpg"
+                    src={asset("/analysis-texture.jpg")}
                     alt=""
                     aria-hidden
                     className="h-20 w-24 shrink-0 rounded-sm object-cover opacity-70 transition-transform [transition-duration:400ms] group-hover:scale-[1.03]"

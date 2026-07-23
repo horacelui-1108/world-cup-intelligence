@@ -15,6 +15,7 @@ import type { NewsItem } from '@/types/football';
 import { teamsById } from '@/data/teams';
 import { venuesById } from '@/data/venues';
 import { playersById } from '@/data/players';
+import { asset } from '@/lib/asset';
 
 const STAGE_LABEL: Record<Match['stage'], string> = {
   GROUP: '小組賽',
@@ -54,7 +55,7 @@ export function toUiMeta(
 
 /** 隊徽：/crests/crest-{teamId}.svg（48 隊全有） */
 export function crestPath(teamId: string): string {
-  return `/crests/crest-${teamId}.svg`;
+  return asset(`/crests/crest-${teamId}.svg`);
 }
 
 export function toTeamRef(teamId: string): TeamRef {
