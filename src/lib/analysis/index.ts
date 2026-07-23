@@ -10,7 +10,11 @@ import { generateAnalysis } from './engine';
 export async function getAnalysisForMatch(matchId: string): Promise<MatchAnalysis> {
   const provider = getProvider();
   const result = await provider.getMatch(matchId);
-  const ctx = buildAnalysisContext(result.dataMode);
+  // demo 模式：發佈時間釘喺 provider 數據快照時間，唔係訪問當刻
+  const ctx = buildAnalysisContext(
+    result.dataMode,
+    result.dataMode === 'demo' ? result.lastUpdated : undefined,
+  );
   return generateAnalysis(result.data, ctx);
 }
 
